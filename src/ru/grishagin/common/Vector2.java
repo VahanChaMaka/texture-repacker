@@ -1,4 +1,4 @@
-package ru.grishagin;
+package ru.grishagin.common;
 
 public class Vector2<T> {
     public T x;

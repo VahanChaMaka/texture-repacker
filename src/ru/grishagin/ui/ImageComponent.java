@@ -1,26 +1,31 @@
-package ru.grishagin;
+package ru.grishagin.ui;
+
+import ru.grishagin.common.Grid;
+import ru.grishagin.common.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-
-import static java.awt.Image.SCALE_SMOOTH;
 
 public class ImageComponent extends JComponent {
 
+    private InfoComponent infoComponent;
+
     private Grid originalGrid = new Grid(new Vector2<>(16, 16));
     private Grid newGrid = new Grid(new Vector2<>(20, 20));
+    private Grid pixelGrid = new Grid(new Vector2<>(1, 1));
 
     private static final long serialVersionUID = 1L;
     private BufferedImage image;
 
     private float zoom = 1;
 
-    public ImageComponent(){
+    public ImageComponent(InfoComponent infoComponent){
+        this.infoComponent = infoComponent;
+
         originalGrid.setVisible(true);
 
+        infoComponent.updateZoom(zoom);
         addMouseWheelListener(e -> {
             int rotation = e.getWheelRotation();
             if(rotation > 0 && zoom >= 8 || rotation < 0 && zoom < 0.1) {
@@ -30,6 +35,7 @@ public class ImageComponent extends JComponent {
             } else {
                 zoom = (int)(zoom + rotation);
             }
+            infoComponent.updateZoom(zoom);
             this.repaint();
         });
     }
@@ -55,6 +61,10 @@ public class ImageComponent extends JComponent {
         return newGrid;
     }
 
+    public float getZoom() {
+        return zoom;
+    }
+
     @Override
     public void paintComponent (Graphics g){
         if(image == null) return;
@@ -71,9 +81,14 @@ public class ImageComponent extends JComponent {
 
         g.drawImage(imageToDraw, 0, 0, displayWidth, displayHeight, this);
 
+        //pixels
+        if(zoom > 3) {
+            drawGrid(g, imageToDraw, pixelGrid.getSize(), new Color(0, 0, 0, 0.2f));
+        }
+
         //original grid
         if(originalGrid.isVisible()) {
-            drawGrid(g, imageToDraw, originalGrid.getSize(), new Color(0, 0, 0, 0.5f));
+            drawGrid(g, imageToDraw, originalGrid.getSize(), new Color(0, 0, 1, 0.5f));
         }
 
         //new grid
