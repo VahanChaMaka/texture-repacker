@@ -91,6 +91,9 @@ public class ImageComponent extends JComponent {
         int displayWidth = (int)(imageWidth * zoom);
         int displayHeight = (int)(imageHeight * zoom);
 
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, displayWidth - (int)zoom, displayHeight);
+
         //BufferedImage imageToDraw = image.getSubimage(0, 0, displayWidth, displayHeight);
         BufferedImage imageToDraw = new BufferedImage(displayWidth, displayHeight, image.getType());
         imageToDraw.getGraphics().drawImage(image, 0, 0, displayWidth, displayHeight, this);
