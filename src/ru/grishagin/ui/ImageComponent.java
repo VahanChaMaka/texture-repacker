@@ -5,6 +5,8 @@ import ru.grishagin.common.Vector2;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
 public class ImageComponent extends JComponent {
@@ -32,11 +34,25 @@ public class ImageComponent extends JComponent {
                 return;
             } else if(zoom <= 1 && rotation < 0){
                 zoom = zoom / (rotation - 1) * -1;
+            } else if(rotation > 0 && zoom > 0 && zoom < 1){
+                zoom = zoom * (rotation + 1);
             } else {
                 zoom = (int)(zoom + rotation);
             }
             infoComponent.updateZoom(zoom);
             this.repaint();
+        });
+
+        addMouseMotionListener(new MouseMotionListener(){
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                infoComponent.updateCursorPosition((int)(e.getX()/zoom), (int)(e.getY()/zoom));
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                //TODO: move large image
+            }
         });
     }
 
@@ -98,12 +114,17 @@ public class ImageComponent extends JComponent {
     }
 
     private void drawGrid(Graphics g, BufferedImage imageToDraw, Vector2<Integer> gridSize, Color color){
+        //don't draw very small grid to prevent infinite looping
+        if(gridSize.x*zoom <= 1 || gridSize.y*zoom <= 1){
+            return;
+        }
+
         g.setColor(color);
         for (int i = 0; i <= imageToDraw.getWidth(); i += gridSize.x * zoom) {
-            g.drawLine(i, 0, i, imageToDraw.getHeight() - (imageToDraw.getHeight() % gridSize.y));
+            g.drawLine(i, 0, i, imageToDraw.getHeight() - (imageToDraw.getHeight() % (int)(gridSize.y*zoom)));
         }
         for (int j = 0; j <= imageToDraw.getHeight(); j += gridSize.y * zoom) {
-            g.drawLine(0, j, imageToDraw.getWidth() - (imageToDraw.getWidth() % gridSize.x), j);
+            g.drawLine(0, j, imageToDraw.getWidth() - (imageToDraw.getWidth() % (int)(gridSize.x*zoom)), j);
         }
     }
 }

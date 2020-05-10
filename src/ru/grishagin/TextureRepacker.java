@@ -16,8 +16,10 @@ import static java.awt.event.ItemEvent.SELECTED;
 
 public class TextureRepacker extends JFrame {
 
+    private static final String OUTPUT_DIR_NAME = "processed";
+
     private BufferedImage originalImage;
-    private BufferedImage processedImage;
+    private File originalImageFile;
 
     private ImageComponent imageComponent;
     private InfoComponent infoComponent;
@@ -104,8 +106,12 @@ public class TextureRepacker extends JFrame {
         JButton saveButton = new JButton("Save");
         saveButton.addActionListener(e -> {
             try {
-                processedImage = Repacker.repack(originalImage, imageComponent.getOriginalGridSize(), imageComponent.getNewGridSize());
-                ImageIO.write(processedImage, "png", new File("processed.png"));
+                BufferedImage processedImage = Repacker.repack(originalImage, imageComponent.getOriginalGridSize(), imageComponent.getNewGridSize());
+
+                File processedDir = new File(originalImageFile.getParent() + File.separatorChar + OUTPUT_DIR_NAME);
+                processedDir.mkdir();
+                ImageIO.write(processedImage, "png",
+                        new File(processedDir.getPath() + File.separatorChar + originalImageFile.getName()));
             } catch (IOException e1) {
                 e1.printStackTrace();
             } catch (IllegalArgumentException ex){
@@ -161,13 +167,13 @@ public class TextureRepacker extends JFrame {
 
             imageComponent.repaint();
         });
-        c.gridx = 1;       //aligned with button 2
+        c.gridx = 1;
         c.gridy = 1;
         container.add(originalXSpinner, c);
 
         JLabel originalYLabel = new JLabel("y");
-        c.gridx = 0;       //aligned with button 2
-        c.gridy = 2;       //third row
+        c.gridx = 0;
+        c.gridy = 2;
         container.add(originalYLabel, c);
 
         JSpinner originalYSpinner = new JSpinner(YModel);
@@ -186,6 +192,7 @@ public class TextureRepacker extends JFrame {
 
     private void openImage(File file){
         try {
+            originalImageFile = file;
             originalImage = ImageIO.read(file);
             imageComponent.setImage(originalImage);
         } catch (IOException e) {
