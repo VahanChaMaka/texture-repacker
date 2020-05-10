@@ -12,9 +12,15 @@ While developing my <a href="https://github.com/VahanChaMaka/king-of-the-dump">g
 </table>
 
 # How to use
-1. Select image
-2. Adjust grid to cut
-3. Adjust new desirable grid (bigger than original one so far)
-4. Click "Save" button. 
+You need Java installed on your computer
+1. Download <a href="texture-repacker.jar">
+2. Go to download directory, open it directly or in terminal by command
+```
+java -jar texture-repacker.jar
+```
+3. Select image
+4. Adjust grid to cut
+5. Adjust new desirable grid (bigger than original one so far)
+6. Click "Save" button. 
 Processed image will be saved in folder "processed" in the original image location with the same name
 <img src="meta/screenshot.png">
