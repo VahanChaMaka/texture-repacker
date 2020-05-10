@@ -13,7 +13,7 @@ While developing my <a href="https://github.com/VahanChaMaka/king-of-the-dump">g
 
 # How to use
 You need Java installed on your computer
-1. Download <a href="texture-repacker.jar">
+1. Download <a href="texture-repacker.jar">texture-repacker.jar</a>
 2. Go to download directory, open it directly or in terminal by command
 ```
 java -jar texture-repacker.jar
