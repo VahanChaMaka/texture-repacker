@@ -14,8 +14,8 @@ public class Repacker {
         List<BufferedImage> subimages = new LinkedList<>();
         //split image by original grid
         //last fractional cells are ignored
-        for (int i = 0; i <= image.getWidth() - originalGrid.x; i += originalGrid.x) {
-            for (int j = 0; j <= image.getHeight() - originalGrid.y; j += originalGrid.y) {
+        for (int j = 0; j <= image.getHeight() - originalGrid.y; j += originalGrid.y) {
+            for (int i = 0; i <= image.getWidth() - originalGrid.x; i += originalGrid.x) {
                 subimages.add(image.getSubimage(i, j, originalGrid.x, originalGrid.y));
             }
         }
