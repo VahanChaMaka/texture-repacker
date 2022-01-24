@@ -4,7 +4,6 @@ import ru.grishagin.common.Vector2;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.util.LinkedList;
 import java.util.List;
 

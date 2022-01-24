@@ -66,13 +66,7 @@ public class InfoComponent extends Container {
     }
 
     public void updateZoom(float zoomValue){
-        String newValue;
-        if(zoomValue < 1){
-            int divider = (int)(1/zoomValue);
-            newValue = "1/" + divider;
-        } else {
-            newValue = String.valueOf(zoomValue);
-        }
+        String newValue = String.format("%.2f", zoomValue);
         zoomValueLabel.setText(newValue);
     }
 

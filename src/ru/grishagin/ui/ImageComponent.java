@@ -29,16 +29,23 @@ public class ImageComponent extends JComponent {
 
         infoComponent.updateZoom(zoom);
         addMouseWheelListener(e -> {
-            int rotation = e.getWheelRotation();
+            float rotation = (float)e.getWheelRotation()/4;
+            float newZoom;
             if(rotation > 0 && zoom >= 8 || rotation < 0 && zoom < 0.1) {
                 return;
             } else if(zoom <= 1 && rotation < 0){
-                zoom = zoom / (rotation - 1) * -1;
+                newZoom = zoom / (rotation - 1) * -1;
             } else if(rotation > 0 && zoom > 0 && zoom < 1){
-                zoom = zoom * (rotation + 1);
+                newZoom = zoom * (rotation + 1);
             } else {
-                zoom = (int)(zoom + rotation);
+                newZoom = zoom + rotation;
             }
+
+            //set exactly to 1 when crossing it
+            if(zoom < 1 && newZoom > 1 || zoom > 1 && newZoom < 1){
+                newZoom = 1;
+            }
+            zoom = newZoom;
             infoComponent.updateZoom(zoom);
             this.repaint();
         });
@@ -99,6 +106,7 @@ public class ImageComponent extends JComponent {
         imageToDraw.getGraphics().drawImage(image, 0, 0, displayWidth, displayHeight, this);
 
         g.drawImage(imageToDraw, 0, 0, displayWidth, displayHeight, this);
+        imageToDraw.flush();
 
         //pixels
         if(zoom > 3) {
