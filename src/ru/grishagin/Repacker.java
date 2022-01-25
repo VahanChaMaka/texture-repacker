@@ -9,18 +9,27 @@ import java.util.List;
 
 public class Repacker {
 
-    public static BufferedImage repack(BufferedImage image, Vector2<Integer> originalGrid, Vector2<Integer> newGrid) {
+    public static BufferedImage repack(BufferedImage image, Vector2<Integer> originalGrid,
+                                       Vector2<Integer> newGrid, List<Integer> skipX,
+                                       List<Integer> skipY) {
         List<BufferedImage> subimages = new LinkedList<>();
         //split image by original grid
         //last fractional cells are ignored
         for (int j = 0; j <= image.getHeight() - originalGrid.y; j += originalGrid.y) {
+            if(skipY.contains(j / originalGrid.y + 1)) {
+                continue;
+            }
             for (int i = 0; i <= image.getWidth() - originalGrid.x; i += originalGrid.x) {
+                if(skipX.contains(i / originalGrid.x + 1)) {
+                    continue;
+                }
                 subimages.add(image.getSubimage(i, j, originalGrid.x, originalGrid.y));
             }
         }
 
-        int newImageWidth = (image.getWidth() / originalGrid.x) * newGrid.x;
-        int newImageHeight = (image.getHeight() / originalGrid.y) * newGrid.y;
+        int newImageWidth =
+                (image.getWidth() / originalGrid.x) * newGrid.x - newGrid.x * skipX.size();
+        int newImageHeight = (image.getHeight() / originalGrid.y) * newGrid.y - newGrid.y * skipY.size();
 
         int gridDifferenceX = newGrid.x - originalGrid.x;
         int gridDifferenceY = newGrid.y - originalGrid.y;
@@ -32,7 +41,7 @@ public class Repacker {
         // Create a graphics which can be used to draw into the buffered image
         Graphics2D graphics = newImage.createGraphics();
 
-        int subimagesInRow = image.getWidth() / originalGrid.x;
+        int subimagesInRow = image.getWidth() / originalGrid.x - skipX.size();
         int column = 0;
         int row = -1;
         for (int i = 0; i < subimages.size(); i++) {

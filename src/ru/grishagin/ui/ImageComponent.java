@@ -9,13 +9,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
+import java.util.List;
+
 public class ImageComponent extends JComponent {
 
     private InfoComponent infoComponent;
 
-    private Grid originalGrid = new Grid(new Vector2<>(16, 16));
-    private Grid newGrid = new Grid(new Vector2<>(20, 20));
+    private Grid originalGrid = new Grid(new Vector2<>(64, 64));
+    private Grid newGrid = new Grid(new Vector2<>(70, 70));
     private Grid pixelGrid = new Grid(new Vector2<>(1, 1));
+
+    private List<Integer> skipX = List.of();
+    private List<Integer> skipY = List.of();
 
     private static final long serialVersionUID = 1L;
     private BufferedImage image;
@@ -88,6 +93,11 @@ public class ImageComponent extends JComponent {
         return zoom;
     }
 
+    public void setSkips(List<Integer> skipX, List<Integer> skipY){
+        this.skipX = skipX;
+        this.skipY = skipY;
+    }
+
     @Override
     public void paintComponent (Graphics g){
         if(image == null) return;
@@ -116,6 +126,23 @@ public class ImageComponent extends JComponent {
         //original grid
         if(originalGrid.isVisible()) {
             drawGrid(g, imageToDraw, originalGrid.getSize(), new Color(0, 0, 1, 0.5f));
+
+            //mark rows and columns to skip
+            g.setColor(new Color(1, 0, 0, 0.5f));
+            for (Integer x : skipX) {
+                int rectX = (int)((x - 1) * originalGrid.getSize().x * zoom);
+                if(rectX < imageToDraw.getWidth()) {
+                    g.fillRect(rectX, 0,
+                            (int) (originalGrid.getSize().x * zoom), imageToDraw.getHeight());
+                }
+            }
+            for (Integer y: skipY) {
+                int rectY = (int)((y - 1) * originalGrid.getSize().y * zoom);
+                if(rectY < imageToDraw.getHeight()) {
+                    g.fillRect(0, rectY,
+                            imageToDraw.getWidth(), (int) (originalGrid.getSize().y * zoom));
+                }
+            }
         }
 
         //new grid
